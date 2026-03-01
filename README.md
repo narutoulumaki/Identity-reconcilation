@@ -60,12 +60,15 @@ You can switch back to SQLite anytime by setting `DATABASE_PROVIDER` to
    - **Value**: Your PostgreSQL Internal Database URL (the provider is auto-detected)
 3. Build Command:
    ```bash
-   npm install && npm run prepare-schema && npx prisma generate && npm run build && npm run migrate:deploy
+   npm install && npm run prepare-schema && npm run fix-migrations && npx prisma generate && npm run build && npm run migrate:deploy
    ```
 4. Start Command: `npm start`
 
-The build script automatically detects PostgreSQL from your `DATABASE_URL` and generates
-the correct schema. No need to manually set `DATABASE_PROVIDER` unless you want to override.
+The build script automatically:
+- Detects PostgreSQL from your `DATABASE_URL`
+- Updates migration_lock.toml to match the provider
+- Converts migration SQL to PostgreSQL format if needed
+- Runs migrations against your database
 
 Once deployed, update the **Hosted Endpoint** section with the service URL.
 
