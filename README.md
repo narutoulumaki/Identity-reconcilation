@@ -55,20 +55,17 @@ You can switch back to SQLite anytime by setting `DATABASE_PROVIDER` to
 ## Deployment to Render
 
 1. Ensure your repo is pushed to GitHub.
-2. In Render service settings, set the following env vars:
-   ```text
-   DATABASE_PROVIDER=postgresql
-   DATABASE_URL=<your-postgres-url>
-   ```
+2. In Render service settings, add environment variable:
+   - **Key**: `DATABASE_URL`
+   - **Value**: Your PostgreSQL Internal Database URL (the provider is auto-detected)
 3. Build Command:
    ```bash
-   npm install && npx prisma generate && npm run build && npx prisma migrate deploy
+   npm install && npm run prepare-schema && npx prisma generate && npm run build && npm run migrate:deploy
    ```
 4. Start Command: `npm start`
 
-Render will run the same Prisma schema but with Postgres, so migration files
-must be compatible with both providers—that’s fine because the SQL types are
-identical for our simple model.
+The build script automatically detects PostgreSQL from your `DATABASE_URL` and generates
+the correct schema. No need to manually set `DATABASE_PROVIDER` unless you want to override.
 
 Once deployed, update the **Hosted Endpoint** section with the service URL.
 
