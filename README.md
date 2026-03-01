@@ -15,18 +15,62 @@ A web service that identifies and tracks a customer's identity across multiple p
 # Install dependencies
 npm install
 
-# Set up environment variables
+# Copy example env and configure
 cp .env.example .env
-# Edit .env and set DATABASE_URL (use SQLite for local: "file:./dev.db")
+# Set for SQLite
+# DATABASE_PROVIDER="sqlite"
+# DATABASE_URL="file:./dev.db"
 
-# Run migrations
+# Run migrations (will create dev.db)
 npx prisma migrate dev --name init
 
 # Start development server
 npm run dev
 ```
 
+**Server will run at: http://localhost:3000**
+
+## Switching Providers
+
+The Prisma datasource now reads `DATABASE_PROVIDER` from the environment,
+so you can switch between SQLite (local) and PostgreSQL (production) simply
+by changing the variable and running migrations.
+
+### To use PostgreSQL locally
+
+1. Install or run a Postgres server on your machine.
+2. Update `.env`:
+   ```dotenv
+   DATABASE_PROVIDER="postgresql"
+   DATABASE_URL="postgresql://postgres:secret@localhost:5432/bitespeed"
+   ```
+3. Run a migration (it will create the schema in your local Postgres):
+   ```bash
+   npx prisma migrate dev --name init
+   ```
+
+You can switch back to SQLite anytime by setting `DATABASE_PROVIDER` to
+`sqlite` and pointing `DATABASE_URL` at a file again.
+
 ## Deployment to Render
+
+1. Ensure your repo is pushed to GitHub.
+2. In Render service settings, set the following env vars:
+   ```text
+   DATABASE_PROVIDER=postgresql
+   DATABASE_URL=<your-postgres-url>
+   ```
+3. Build Command:
+   ```bash
+   npm install && npx prisma generate && npm run build && npx prisma migrate deploy
+   ```
+4. Start Command: `npm start`
+
+Render will run the same Prisma schema but with Postgres, so migration files
+must be compatible with both providers—that’s fine because the SQL types are
+identical for our simple model.
+
+Once deployed, update the **Hosted Endpoint** section with the service URL.
 
 ### 1. Create PostgreSQL Database (if you don't have one)
 - Go to [Render Dashboard](https://dashboard.render.com/)

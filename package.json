@@ -4,11 +4,13 @@
   "description": "Identity reconciliation service for Bitespeed backend task",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "prepare-schema": "node scripts/setProvider.js",
+    "build": "npm run prepare-schema && tsc",
     "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts",
+    "dev": "npm run prepare-schema && ts-node src/index.ts",
     "postinstall": "prisma generate",
-    "migrate:deploy": "prisma migrate deploy"
+    "migrate:dev": "npm run prepare-schema && prisma migrate dev",
+    "migrate:deploy": "npm run prepare-schema && prisma migrate deploy"
   },
   "dependencies": {
     "@prisma/client": "^5.10.0",
