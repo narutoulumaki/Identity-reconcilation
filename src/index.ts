@@ -6,6 +6,17 @@ const prisma = new PrismaClient();
 
 app.use(express.json());
 
+// Health check endpoint
+app.get("/", (req: Request, res: Response) => {
+  res.json({
+    status: "ok",
+    message: "Bitespeed Identity Reconciliation API",
+    endpoints: {
+      identify: "POST /identify"
+    }
+  });
+});
+
 app.post("/identify", async (req: Request, res: Response) => {
   try {
     const { email, phoneNumber } = req.body;
